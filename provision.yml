@@ -49,6 +49,7 @@
         path: "{{ item }}"
         state: directory
       loop:
+        - /mnt/data/backups
         - /mnt/data/postgres
         - /mnt/data/wikijs/config
         - /mnt/data/wikijs/data
@@ -72,6 +73,27 @@
       ansible.builtin.copy:
         src: ./.env
         dest: /mnt/data/.env
+
+    - name: copy the backup script
+      ansible.builtin.copy:
+        src: backup.sh
+        dest: /mnt/data/backup.sh
+        mode: '0755'
+
+    - name: define the backup job
+      cron:
+        name: "Backup Mediawiki"
+        minute: "0"
+        hour: "2"
+        job: "/mnt/data/backup.sh"
+        user: "root"
+        cron_file: wikijs_backup
+
+    - name: copy the restore script
+      ansible.builtin.copy:
+        src: restore.sh
+        dest: /mnt/data/restore.sh
+        mode: '0755'
 
     - name: create service for wikijs
       ansible.builtin.copy:

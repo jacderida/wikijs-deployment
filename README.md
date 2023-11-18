@@ -48,3 +48,9 @@ To confirm that the A record is available, you can use `dig A <your domain> @1.1
 The Wikijs instance should now be accessible at the domain address, though only on HTTP for now.
 
 The installation for Wikijs is minimal. It only really involves setting up an administrative user and specifying the domain.
+
+## Backup/Restore
+
+Backup and restore scripts are provisioned on the instance. An archive is produced which contains a `pg_dumpall` database backup, along with the Wikijs data and config directories. The archive is then uploaded to S3.
+
+To restore one of these backups, you can provision a new set of infrastructure using the process defined above. Then SSH to the instance and run the restore script at `/mnt/data/restore.sh <backup file name>`. This will pull the backup from S3 and restore the database and directories mentioned previously.
